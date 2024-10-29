@@ -1,6 +1,6 @@
 from flask import jsonify, request #jsonify converts python objects into JSON format
-from dbcollections import CollectionsModel
-from propertyservice import UtilService
+from services.db_collections import CollectionsModel
+from services.util_services import UtilService
 
 class PropertyController:
     def __init__(self, model): #model parameter is the MongoDBModel class
@@ -33,8 +33,8 @@ class PropertyController:
             else:
                 return {"error": "Property id does not match with any records!"}
         except Exception as error:
-            return {"error": "invalid id"}        
-    
+            return {"error": "invalid id"}   
+
     def insert_property(self):
         try:
             get_property_collection= self.model.get_propertyCollection(self.property_collection)
@@ -46,7 +46,6 @@ class PropertyController:
             else:
                 return {"error": "No document is available to insert"}
         except:
-            return {"error": "Error occurred during operation"}
-        
+            return {"error": "Error occurred during operation"}     
     #This code provides a basic implementation of a Flask API endpoint for retrieving all properties from a MongoDB database. 
     #The jsonify function is used to create a JSON response that can be sent back to the client.

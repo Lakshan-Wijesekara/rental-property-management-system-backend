@@ -1,8 +1,8 @@
 from flask import Flask
 from dotenv import load_dotenv
 import os
-from controller import PropertyController
-from models import MongoDBModel
+from controllers.property_controller import PropertyController
+from models.property_model import MongoDBModel
 
 mongo_app = Flask(__name__) #Flask application instance named mongo_app
 #To load the URI from environment file,
