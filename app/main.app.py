@@ -18,5 +18,9 @@ property_controller = PropertyController(mongo_model)
 def get_properties():
     return property_controller.get_properties() 
 
+@mongo_app.route('/api/properties/<id>') #API endpoint
+def get_one_property(id):
+    return property_controller.get_property(id)
+
 if __name__== '__main__': #Ensures that the code within this block only runs when script is executed directly, not when imported as a module
     mongo_app.run(debug=True)
