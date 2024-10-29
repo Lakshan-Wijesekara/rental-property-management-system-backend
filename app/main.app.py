@@ -22,5 +22,9 @@ def get_properties():
 def get_one_property(id):
     return property_controller.get_property(id)
 
+@mongo_app.route('/api/properties', methods=['POST']) #API endpoint
+def insert_one_property():
+    return property_controller.insert_property() 
+
 if __name__== '__main__': #Ensures that the code within this block only runs when script is executed directly, not when imported as a module
     mongo_app.run(debug=True)

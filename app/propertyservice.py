@@ -2,7 +2,7 @@ from bson import json_util #Module used to serialize and deserialize BSON object
 from bson.objectid import ObjectId
 import json #Module to work with JSON data
 
-class PropertyService:
+class UtilService:
     def convert_cursor_object(self, cursorObject):
         properties = cursorObject
         properties_json = json_util.dumps(properties)
