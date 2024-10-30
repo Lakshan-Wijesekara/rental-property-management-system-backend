@@ -47,5 +47,18 @@ class PropertyController:
                 return {"error": "No document is available to insert"}
         except:
             return {"error": "Error occurred during operation"}     
+
+    def update_property(self, id):
+        try:
+            get_property_collection= self.model.get_propertyCollection(self.property_collection)
+            property_id = self.convert_properties.convert_object_id(id)
+            property_payload = request.get_json()
+            updated_property = get_property_collection.update_one({"_id": property_id}, {"$set":property_payload})
+            if updated_property:
+                return {"message":"Property updated succesfully"}
+            else:
+                return {"error": "No record found to update"}
+        except:
+            return {"error": "Error occurred during update operation"}     
     #This code provides a basic implementation of a Flask API endpoint for retrieving all properties from a MongoDB database. 
     #The jsonify function is used to create a JSON response that can be sent back to the client.
