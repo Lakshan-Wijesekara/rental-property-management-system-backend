@@ -12,13 +12,29 @@ class PropertyController:
     def get_properties(self):
         try:
             get_property_collection = self.model.get_propertyCollection(self.property_collection)
-            properties = get_property_collection.find() #This returns a cursor object
-            # Convert a cursor objects to a JSON objects
-            if properties:
-                properties_objects = self.convert_properties.convert_cursor_object(properties)
-                return jsonify(properties_objects), {'Access-Control-Allow-Origin': '*'}
+            properties = get_property_collection.find() #This returns a cursor object if not for list keyword(better for large datasets)
+            json_properties = self.convert_properties.convert_cursor_object(properties)
+            # Query parameters for filtering
+            selectedCity = request.args.get('selectedCity')
+            propertyName = request.args.get('propertyName')
+            if selectedCity or propertyName:
+                # Argument gets the selectedCity and propertyName from the URL and checks if the returned value can be found in the document list
+                filter_query = {}
+                if selectedCity:
+                    filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
+                if propertyName:
+                    filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
+                results = get_property_collection.find(filter_query)
+                json_results = self.convert_properties.convert_cursor_object(results)
+                counter = get_property_collection.count_documents(filter_query)
+
+                if counter>0:
+                    return jsonify(json_results), {'Access-Control-Allow-Origin': '*'}
+                else:
+                    return jsonify([]), {'Access-Control-Allow-Origin': '*'}
+                
             else:
-                return {"error": "Could not find the properties"}
+                 return jsonify(json_properties), {'Access-Control-Allow-Origin': '*'}
         except Exception as error:
             return {"error": "Property retrieving failed!"}
         
