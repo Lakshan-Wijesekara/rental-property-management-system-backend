@@ -1,3 +1,3 @@
 #Collection variables
 class CollectionsModel:
-    propertyCollection = "property_details"
+    property_collection_name = "property_details"
