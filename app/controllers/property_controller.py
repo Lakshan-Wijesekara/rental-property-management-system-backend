@@ -7,13 +7,14 @@ class PropertyController:
     def __init__(self, model): #model parameter is the MongoDBModel class
         self.model = model
         collections_list = CollectionsModel() #Instance of dbcollections
-        self.property_collection = collections_list.property_collection_name #Access the variable in dbcollection
+        self.property_collection_name = collections_list.property_collection_name #Access the variable in dbcollection
         self.convert_properties = UtilService()
         self.http_responses = HttpResponse()
+        self.property_collection = model.get_propertyCollection(self.property_collection_name)
 
     def get_properties(self):
         try:
-            get_property_collection = self.model.get_propertyCollection(self.property_collection)
+            get_property_collection =  self.property_collection
             properties = get_property_collection.find() #This returns a cursor object if not for list keyword(better for large datasets)
             json_properties = self.convert_properties.convert_cursor_object(properties)
             retrieve_all_response = self.http_responses.successResponse(json_properties)
@@ -27,6 +28,7 @@ class PropertyController:
                     filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
                 if propertyName:
                     filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
+                filter_query['is_active'] = True
                 results = get_property_collection.find(filter_query)
                 json_results = self.convert_properties.convert_cursor_object(results)
                 filter_response = self.http_responses.successResponse(json_results)
@@ -45,7 +47,7 @@ class PropertyController:
         
     def get_property(self,id):
         try:
-            get_property_collection = self.model.get_propertyCollection(self.property_collection)
+            get_property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             retrieved_property = get_property_collection.find_one({'_id': property_id}) 
             if retrieved_property:
@@ -62,7 +64,7 @@ class PropertyController:
 
     def insert_property(self):
         try:
-            get_property_collection= self.model.get_propertyCollection(self.property_collection)
+            get_property_collection =  self.property_collection
             property_payload = request.get_json()
             inserted_property = get_property_collection.insert_one(property_payload)
             if inserted_property:
@@ -77,9 +79,9 @@ class PropertyController:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)
 
-    def update_property(self, id):
+    def update_property(self):
         try:
-            get_property_collection= self.model.get_propertyCollection(self.property_collection)
+            get_property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             property_payload = request.get_json()
             updated_property = get_property_collection.update_one({"_id": property_id}, {"$set":property_payload})
@@ -94,5 +96,23 @@ class PropertyController:
         except Exception as error:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)    
+        
+    def deactivate_property(self, id):
+        try:
+            get_property_collection=  self.property_collection
+            property_id = self.convert_properties.convert_object_id(id)
+            deleted_property = get_property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
+            if deleted_property:
+                success_message = "The identified property was deactivated successfully"
+                success_response = self.http_responses.successResponse(success_message)
+                return jsonify(success_response)
+            else:
+                error_message = "No record found to deactivate"
+                error_response = self.http_responses.errorResponse(error_message)
+                return jsonify(error_response)
+        except Exception as error:
+            error_at_exception = self.http_responses.errorResponse(str(error))
+            return jsonify(error_at_exception)    
+        
     #This code provides a basic implementation of a Flask API endpoint for retrieving all properties from a MongoDB database. 
     #The jsonify function is used to create a JSON response that can be sent back to the client.
