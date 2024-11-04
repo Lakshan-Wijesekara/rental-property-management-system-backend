@@ -2,6 +2,7 @@ from flask import jsonify, request #jsonify converts python objects into JSON fo
 from services.db_collections import CollectionsModel
 from services.util_services import UtilService
 from services.http_responses import HttpResponse
+from flask_cors import cross_origin
 
 class PropertyController:
     def __init__(self, model): #model parameter is the MongoDBModel class
@@ -12,6 +13,7 @@ class PropertyController:
         self.http_responses = HttpResponse()
         self.property_collection = model.get_propertyCollection(self.property_collection_name)
 
+    @cross_origin(supports_credentials=True)
     def get_properties(self):
         try:
             get_property_collection =  self.property_collection
@@ -35,16 +37,17 @@ class PropertyController:
                 counter = get_property_collection.count_documents(filter_query)
 
                 if counter>0:
-                    return jsonify(filter_response), {'Access-Control-Allow-Origin': '*'}
+                    return jsonify(filter_response)
                 else:
-                    return jsonify([]), {'Access-Control-Allow-Origin': '*'}
+                    return jsonify([])
                 
             else:
-                 return jsonify(retrieve_all_response), {'Access-Control-Allow-Origin': '*'}
+                 return jsonify(retrieve_all_response)
         except Exception as error:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)
-        
+
+    @cross_origin(supports_credentials=True)    
     def get_property(self,id):
         try:
             get_property_collection =  self.property_collection
@@ -62,6 +65,7 @@ class PropertyController:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)   
 
+    @cross_origin(supports_credentials=True)
     def insert_property(self):
         try:
             get_property_collection =  self.property_collection
@@ -78,7 +82,8 @@ class PropertyController:
         except Exception as error:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)
-
+        
+    @cross_origin(supports_credentials=True)
     def update_property(self):
         try:
             get_property_collection =  self.property_collection
@@ -96,7 +101,8 @@ class PropertyController:
         except Exception as error:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)    
-        
+
+    @cross_origin(supports_credentials=True)    
     def deactivate_property(self, id):
         try:
             get_property_collection=  self.property_collection
