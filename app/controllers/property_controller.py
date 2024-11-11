@@ -52,7 +52,7 @@ class PropertyController:
         try:
             get_property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
-            retrieved_property = get_property_collection.find_one({'_id': property_id}) 
+            retrieved_property = get_property_collection.find({'_id': property_id}) 
             if retrieved_property:
                 retrieved_property_object = self.convert_properties.convert_cursor_object(retrieved_property)
                 success_response = self.http_responses.successResponse(retrieved_property_object)

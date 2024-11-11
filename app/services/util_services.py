@@ -1,13 +1,12 @@
-from bson import json_util #Module used to serialize and deserialize BSON objects to and from JSON
 from bson.objectid import ObjectId
-import json #Module to work with JSON data
 
 class UtilService:
     def convert_cursor_object(self, cursorObject):
         properties = cursorObject
-        properties_json = json_util.dumps(properties)
-        properties_objects = json.loads(properties_json)
-        return properties_objects
+        properties_list = list(properties)
+        # Creates a list of dictionaries from properties_list and each is a copy of the original but the id is converted to a string id
+        data_list = [{**doc, '_id': str(doc['_id'])} for doc in properties_list] 
+        return data_list
     
     def convert_object_id(self, id):
         return ObjectId(id)

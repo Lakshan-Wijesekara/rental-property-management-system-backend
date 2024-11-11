@@ -11,13 +11,15 @@ load_dotenv(dotenv_path='.env')
 #Set the URI,
 Mongo_uri = os.getenv("DB_URI")
 # MongoDB model instance created,
+Local_uri = os.getenv("LOCAL_HOST")
+# MongoDB model instance created,
 mongo_model = MongoDBModel(Mongo_uri) #Passing the Mongo_uri to the MongoDBModel class again is a common practice in object-oriented programming to ensure that each instance has the necessary information to connect to the desired MongoDB server. This approach promotes encapsulation, flexibility, and better code organization.
 #PropertyController instance created,
 property_controller = PropertyController(mongo_model)
 #Create a Blueprint
 api_blueprint = Blueprint('properties_api', __name__)
 #Initialize CORS on blueprint
-cors_config = CORSConfig(origins=["http://127.0.0.1:5000/api/properties"], headers=["Content-Type", "Authorization"])
+cors_config = CORSConfig(origins=[Local_uri+"/api/properties"], headers=["Content-Type", "Authorization"])
 cors_config.initialize_cors(api_blueprint)
 
 @api_blueprint.route('/properties', methods=['GET']) #API endpoint
