@@ -2,7 +2,6 @@ from flask import jsonify, request
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from services.db_connection import MongoDBConnection, property_collection_name
-# from models.property_model import Property
 
 
 class PropertyServices:
@@ -62,7 +61,7 @@ class PropertyServices:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)  
 
-    def insert_property(self, ):
+    def insert_property(self):
         try:
             get_property_collection =  self.property_collection
             property_payload = request.get_json()
@@ -79,7 +78,7 @@ class PropertyServices:
             error_at_exception = self.http_responses.errorResponse(str(error))
             return jsonify(error_at_exception) 
         
-    def update_property(self):
+    def update_property(self,id):
         try:
             get_property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)

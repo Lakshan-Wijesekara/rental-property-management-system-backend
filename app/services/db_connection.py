@@ -3,6 +3,7 @@ import pymongo #Interface to interact with MongoDB
 from dotenv import load_dotenv
 import os
 
+load_dotenv(dotenv_path='.env')
 Mongo_uri = os.getenv("DB_URI")
 #Collection variables
 property_collection_name = "property_details"

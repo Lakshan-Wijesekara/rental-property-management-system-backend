@@ -27,7 +27,6 @@ class PropertyController:
     def get_property(id):
         return property_services.get_property(id)
 
-        
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties', methods=['POST'])
     def insert_property():
@@ -35,14 +34,13 @@ class PropertyController:
         
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties/<id>', methods=['PUT'])
-    def update_property():
-        return property_services.update_property()
-    
+    def update_property(id):
+        return property_services.update_property(id)  
 
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties/<id>', methods=['DELETE'])    
     def deactivate_property(id):
-        return property_services.deactivate_property()
+        return property_services.deactivate_property(id)
         
     #This code provides a basic implementation of a Flask API endpoint for retrieving all properties from a MongoDB database. 
     #The jsonify function is used to create a JSON response that can be sent back to the client.
