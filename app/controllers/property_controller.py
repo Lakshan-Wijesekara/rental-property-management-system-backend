@@ -24,8 +24,8 @@ class PropertyController:
             selectedCity = request.args.get('selectedCity')
             propertyName = request.args.get('propertyName')
             filtered_properties = property_services.get_all(selectedCity, propertyName)
-            filtered_property_response = http_responses.successResponse(filtered_properties)
-            return filtered_property_response
+            return http_responses.successResponse(filtered_properties)
+            
         
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
@@ -36,8 +36,7 @@ class PropertyController:
     def get_property(id):
         try:
             retrieved_property = property_services.get_property(id)
-            retrieved_property_response = http_responses.successResponse(retrieved_property)
-            return retrieved_property_response       
+            return http_responses.successResponse(retrieved_property)
         
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
@@ -49,8 +48,7 @@ class PropertyController:
         try:
             property_payload = request.get_json()
             inserted_property = property_services.insert_property(property_payload)
-            inserted_property_response = http_responses.successResponse(inserted_property)
-            return inserted_property_response
+            return http_responses.successResponse(inserted_property)
             
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
@@ -62,8 +60,8 @@ class PropertyController:
         try:
             property_payload = request.get_json()
             updated_property = property_services.update_property(id, property_payload)
-            updated_property_response = http_responses.successResponse(updated_property)
-            return updated_property_response
+            return http_responses.successResponse(updated_property)
+        
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
             return error_at_exception
@@ -73,8 +71,7 @@ class PropertyController:
     def deactivate_property(id):
         try:
             deleted_property = property_services.deactivate_property(id)
-            deleted_property_response = http_responses.successResponse(deleted_property)
-            return deleted_property_response           
+            return http_responses.successResponse(deleted_property)
         
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
