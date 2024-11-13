@@ -23,7 +23,7 @@ class PropertyController:
         try:
             selectedCity = request.args.get('selectedCity')
             propertyName = request.args.get('propertyName')
-            return property_services.get_all(selectedCity, propertyName)
+            return jsonify(property_services.get_all(selectedCity, propertyName))
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
             return jsonify(error_at_exception)
