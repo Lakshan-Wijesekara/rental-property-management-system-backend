@@ -13,7 +13,7 @@ class PropertyServices:
 
     def get_all(self,selectedCity, propertyName):
         try:
-            get_property_collection =  self.property_collection
+            property_collection =  self.property_collection
             # Query parameters for filtering
             filter_query = {}
             if selectedCity or propertyName:
@@ -24,7 +24,7 @@ class PropertyServices:
                     filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
                 filter_query['is_active'] = True
 
-            properties = get_property_collection.find(filter_query)
+            properties = property_collection.find(filter_query)
             #This returns a cursor object if not for list keyword(better for large datasets)
             json_properties = self.convert_properties.convert_cursor_object(properties)
             counter = len(json_properties)
@@ -32,43 +32,61 @@ class PropertyServices:
                 return json_properties
             else:
                 return jsonify([])
-        except Exception as error:
-            return self.http_responses.errorResponse(str(error))
-    
+        except:
+            raise
+
     def get_property(self,id):
         try:    
-            get_property_collection =  self.property_collection
+            property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
-            retrieved_property = get_property_collection.find({'_id': property_id}) 
+            retrieved_property = property_collection.find({'_id': property_id}) 
             retrieved_property_object = self.convert_properties.convert_cursor_object(retrieved_property)
-            return retrieved_property_object
-        except Exception as error:
-            return self.http_responses.errorResponse(str(error))
+            if retrieved_property:
+                return retrieved_property_object
+            else:
+                error_message = "Property id does not match with any records!"
+                return error_message
+        except:
+            raise
     
     def insert_property(self, property_payload):
         try:
-            get_property_collection =  self.property_collection
-            inserted_property = get_property_collection.insert_one(property_payload)
+            property_collection =  self.property_collection
+            inserted_property = property_collection.insert_one(property_payload)
             inserted_property_id = str(inserted_property.inserted_id)
-            return inserted_property_id
-        except Exception as error:
-            return self.http_responses.errorResponse(str(error))
+            if inserted_property:
+                return inserted_property_id
+            else:
+                error_message = "No document is available to insert!"
+                return error_message
+        except:
+            raise
     
     def update_property(self,id, property_payload):
         try:
-            get_property_collection =  self.property_collection
+            property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
-            updated_property = get_property_collection.update_one({"_id": property_id}, {"$set":property_payload})
-            return updated_property
-        except Exception as error:
-            return self.http_responses.errorResponse(str(error))
+            updated_property = property_collection.update_one({"_id": property_id}, {"$set":property_payload})
+            if updated_property:
+                success_message = "The identified property updated successfully"
+                return success_message
+            else:
+                error_message = "No record found to update"
+            return error_message 
+        except:
+            raise 
         
     def deactivate_property(self, id):
         try:
-            get_property_collection=  self.property_collection
+            property_collection=  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
-            deleted_property = get_property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
-            return deleted_property
-        except Exception as error:
-            return self.http_responses.errorResponse(str(error))
+            deleted_property = property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
+            if deleted_property:
+                success_message = "The identified property was deactivated successfully"
+                return success_message
+            else:
+                error_message = "No record found to deactivate"
+                return error_message
+        except:
+            raise 
               
