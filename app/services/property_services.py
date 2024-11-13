@@ -27,10 +27,9 @@ class PropertyServices:
             properties = get_property_collection.find(filter_query)
             #This returns a cursor object if not for list keyword(better for large datasets)
             json_properties = self.convert_properties.convert_cursor_object(properties)
-            retrieve_all_response = self.http_responses.successResponse(json_properties)
             counter = len(json_properties)
             if counter>0:
-                return retrieve_all_response
+                return json_properties
             else:
                 return jsonify([])
         except Exception as error:
