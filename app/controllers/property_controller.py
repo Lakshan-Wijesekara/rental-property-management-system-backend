@@ -26,7 +26,6 @@ class PropertyController:
             filtered_properties = property_services.get_all(selectedCity, propertyName)
             return http_responses.successResponse(filtered_properties)
             
-        
         except Exception as error:
             error_at_exception = http_responses.errorResponse(str(error))
             return error_at_exception

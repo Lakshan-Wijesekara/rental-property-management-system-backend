@@ -41,7 +41,7 @@ class PropertyServices:
             property_id = self.convert_properties.convert_object_id(id)
             retrieved_property = property_collection.find({'_id': property_id}) 
             retrieved_property_object = self.convert_properties.convert_cursor_object(retrieved_property)
-            if retrieved_property:
+            if retrieved_property_object!=[]:
                 return retrieved_property_object
             else:
                 error_message = "Property id does not match with any records!"
