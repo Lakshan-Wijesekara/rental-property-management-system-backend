@@ -28,10 +28,12 @@ class PropertyServices:
             #This returns a cursor object if not for list keyword(better for large datasets)
             json_properties = self.convert_properties.convert_cursor_object(properties)
             counter = len(json_properties)
+        
             if counter>0:
                 return json_properties
             else:
                 return jsonify([])
+            
         except:
             raise
 
@@ -41,24 +43,23 @@ class PropertyServices:
             property_id = self.convert_properties.convert_object_id(id)
             retrieved_property = property_collection.find({'_id': property_id}) 
             retrieved_property_object = self.convert_properties.convert_cursor_object(retrieved_property)
-            try:
-                if retrieved_property_object!=[]:
-                    return retrieved_property_object
-            except Exception as e:
-                return e
+            if retrieved_property_object==[]:
+                raise ValueError("No record found from the given ID!")
+            else:
+                return self.http_responses.successResponse(retrieved_property_object)
+            
         except:
             raise
     
     def insert_property(self, property_payload):
         try:
             property_collection =  self.property_collection
-            inserted_property = property_collection.insert_one(property_payload)
-            inserted_property_id = str(inserted_property.inserted_id)
-            try:
-                if inserted_property:
-                    return inserted_property_id
-            except Exception as e:
-                return e
+            if property_payload == {}:
+                raise ValueError("No data is available to post the record!")
+            else:
+                inserted_property = property_collection.insert_one(property_payload)
+                inserted_property_id = str(inserted_property.inserted_id)
+                return self.http_responses.successResponse(inserted_property_id)      
         except:
             raise
     
@@ -67,11 +68,11 @@ class PropertyServices:
             property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             updated_property = property_collection.update_one({"_id": property_id}, {"$set":property_payload})
-            if updated_property.matched_count!=0:
-                try:
-                    return "The identified property updated successfully"     
-                except Exception as e:
-                    return e
+            if updated_property.matched_count==0 and property_payload == {}:
+                raise ValueError("Id not found to update or no data to update the record!")
+            else:
+                return self.http_responses.successResponse(str(property_id))
+            
         except:
             raise 
         
@@ -80,12 +81,11 @@ class PropertyServices:
             property_collection=  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             deleted_property = property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
-            if deleted_property.matched_count!=0:
-                try:
-                    success_message = "The identified property was deactivated successfully"
-                    return success_message
-                except Exception as e:
-                    return e
+            if deleted_property.matched_count==0 and id==None:
+                raise ValueError("Given ID does not match with any records or id is not valid!")
+            else:
+                return self.http_responses.successResponse(str(property_id))
+            
         except:
             raise 
               
