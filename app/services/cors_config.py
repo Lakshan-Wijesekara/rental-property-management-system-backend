@@ -1,5 +1,4 @@
 from flask_cors import CORS
-
 class CORSConfig:
     def __init__(self, origins="*", methods=["GET", "POST", "PUT", "DELETE"], headers=["Content-Type"]):
         self.origins = origins
