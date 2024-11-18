@@ -41,11 +41,11 @@ class PropertyServices:
             property_id = self.convert_properties.convert_object_id(id)
             retrieved_property = property_collection.find({'_id': property_id}) 
             retrieved_property_object = self.convert_properties.convert_cursor_object(retrieved_property)
-            if retrieved_property_object!=[]:
-                return retrieved_property_object
-            else:
-                error_message = "Property id does not match with any records!"
-                return error_message
+            try:
+                if retrieved_property_object!=[]:
+                    return retrieved_property_object
+            except Exception as e:
+                return e
         except:
             raise
     
@@ -54,11 +54,11 @@ class PropertyServices:
             property_collection =  self.property_collection
             inserted_property = property_collection.insert_one(property_payload)
             inserted_property_id = str(inserted_property.inserted_id)
-            if inserted_property:
-                return inserted_property_id
-            else:
-                error_message = "No document is available to insert!"
-                return error_message
+            try:
+                if inserted_property:
+                    return inserted_property_id
+            except Exception as e:
+                return e
         except:
             raise
     
@@ -67,12 +67,11 @@ class PropertyServices:
             property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             updated_property = property_collection.update_one({"_id": property_id}, {"$set":property_payload})
-            if updated_property:
-                success_message = "The identified property updated successfully"
-                return success_message
-            else:
-                error_message = "No record found to update"
-            return error_message 
+            if updated_property.matched_count!=0:
+                try:
+                    return "The identified property updated successfully"     
+                except Exception as e:
+                    return e
         except:
             raise 
         
@@ -81,12 +80,12 @@ class PropertyServices:
             property_collection=  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             deleted_property = property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
-            if deleted_property:
-                success_message = "The identified property was deactivated successfully"
-                return success_message
-            else:
-                error_message = "No record found to deactivate"
-                return error_message
+            if deleted_property.matched_count!=0:
+                try:
+                    success_message = "The identified property was deactivated successfully"
+                    return success_message
+                except Exception as e:
+                    return e
         except:
             raise 
               
