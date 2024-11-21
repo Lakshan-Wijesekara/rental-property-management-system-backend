@@ -2,7 +2,7 @@ from flask import jsonify
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from services.db_connection import MongoDBConnection, property_collection_name
-
+from models.property_model import Property
 
 class PropertyServices:
     def __init__(self): #model parameter is the MongoDBModel class
@@ -22,7 +22,7 @@ class PropertyServices:
                     filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
                 if propertyName:
                     filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
-                filter_query['is_active'] = True
+            filter_query['is_active'] = True
 
             properties = property_collection.find(filter_query)
             #This returns a cursor object if not for list keyword(better for large datasets)
@@ -51,17 +51,21 @@ class PropertyServices:
         except:
             raise
     
-    def insert_property(self, property_payload):
-        try:
-            property_collection =  self.property_collection
-            if property_payload == {}:
-                raise ValueError("No data is available to post the record!")
-            else:
-                inserted_property = property_collection.insert_one(property_payload)
+    def insert_property(self, property_payload ):
+        property_collection =  self.property_collection
+        #Unpacks the incoming dict to a Property model instance dataclass
+        property_model_instance = Property(**property_payload)
+        #Convert the incoming payload to a dictionary
+        property_dict = property_model_instance.__dict__.copy()
+        if property_payload == {}:
+            raise ValueError("No data is available to post the record!")
+        elif property_dict != {}:
+            try:
+                inserted_property = property_collection.insert_one(property_dict)
                 inserted_property_id = str(inserted_property.inserted_id)
                 return self.http_responses.successResponse(inserted_property_id)      
-        except:
-            raise
+            except:
+                raise
     
     def update_property(self,id, property_payload):
         try:
