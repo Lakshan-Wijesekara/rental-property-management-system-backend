@@ -7,6 +7,7 @@ load_dotenv(dotenv_path='.env')
 Mongo_uri = os.getenv("DB_URI")
 #Collection variables
 property_collection_name = "property_details"
+user_collection_name = "user_details"
 
 class MongoDBConnection:
     def __init__(self): #Base class
@@ -16,4 +17,8 @@ class MongoDBConnection:
     def get_propertyCollection(self, property_details):       
         propertyCollection = self.db[property_details]
         return propertyCollection
+    
+    def get_userCollection(self, user_details):       
+        userCollection = self.db[user_details]
+        return userCollection
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request #jsonify converts python objects into JSON format
+from flask import Blueprint, request #jsonify converts python objects into JSON format
 from services.property_services import PropertyServices
 from services.http_responses import HttpResponse
 from flask_cors import cross_origin
@@ -12,13 +12,13 @@ http_responses = HttpResponse()
 property_services = PropertyServices()
 
 #Create a Blueprint
-api_blueprint = Blueprint('properties_api', __name__)
+property_api_blueprint = Blueprint('properties', __name__)
 #Initialize CORS on blueprint
 cors_config = CORSConfig(origins=[Local_uri+"/api/properties"], headers=["Content-Type", "Authorization"])
-cors_config.initialize_cors(api_blueprint)
+cors_config.initialize_cors(property_api_blueprint)
 class PropertyController:
     @cross_origin(supports_credentials=True)  
-    @api_blueprint.route('/properties', methods=['GET']) #API endpoint
+    @property_api_blueprint.route('/properties', methods=['GET']) #API endpoint
     def get_properties():
         try:
             selectedCity = request.args.get('selectedCity')
@@ -31,7 +31,7 @@ class PropertyController:
 
         
     @cross_origin(supports_credentials=True)
-    @api_blueprint.route('/properties/<id>', methods=['GET'])    
+    @property_api_blueprint.route('/properties/<id>', methods=['GET'])    
     def get_property(id):
         try:
             retrieved_property = property_services.get_property(id)
@@ -41,7 +41,7 @@ class PropertyController:
             return http_responses.errorResponse(str(error),400)
 
     @cross_origin(supports_credentials=True)
-    @api_blueprint.route('/properties', methods=['POST'])
+    @property_api_blueprint.route('/properties', methods=['POST'])
     def insert_property():
         try:
             property_payload = request.get_json()
@@ -52,7 +52,7 @@ class PropertyController:
             return http_responses.errorResponse(str(error), 400)
 
     @cross_origin(supports_credentials=True)
-    @api_blueprint.route('/properties/<id>', methods=['PUT'])
+    @property_api_blueprint.route('/properties/<id>', methods=['PUT'])
     def update_property(id):
         try:
             property_payload = request.get_json()
@@ -63,7 +63,7 @@ class PropertyController:
             return http_responses.errorResponse(str(error), 400)
 
     @cross_origin(supports_credentials=True)
-    @api_blueprint.route('/properties/<id>', methods=['DELETE'])    
+    @property_api_blueprint.route('/properties/<id>', methods=['DELETE'])    
     def deactivate_property(id):
         try:
             deleted_property = property_services.deactivate_property(id)

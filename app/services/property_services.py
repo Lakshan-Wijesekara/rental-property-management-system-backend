@@ -22,13 +22,12 @@ class PropertyServices:
                     filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
                 if propertyName:
                     filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
-            filter_query['is_active'] = True
+                filter_query['is_active'] = True
 
             properties = property_collection.find(filter_query)
             #This returns a cursor object if not for list keyword(better for large datasets)
             json_properties = self.convert_properties.convert_cursor_object(properties)
             counter = len(json_properties)
-        
             if counter>0:
                 return json_properties
             else:
