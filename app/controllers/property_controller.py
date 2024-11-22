@@ -24,21 +24,21 @@ class PropertyController:
             selectedCity = request.args.get('selectedCity')
             propertyName = request.args.get('propertyName')
             filtered_properties = property_services.get_all(selectedCity, propertyName)
-            return http_responses.successResponse(filtered_properties)
+            return http_responses.successResponse(filtered_properties, 200)
             
         except Exception as error:
-            error_at_exception = http_responses.errorResponse(str(error))
-            return error_at_exception
+            return http_responses.errorResponse(str(error), 400)
+
         
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties/<id>', methods=['GET'])    
     def get_property(id):
         try:
             retrieved_property = property_services.get_property(id)
-            return retrieved_property
+            return http_responses.successResponse(retrieved_property,200)
             
         except Exception as error:
-            return http_responses.errorResponse(str(error))
+            return http_responses.errorResponse(str(error),400)
 
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties', methods=['POST'])
@@ -46,10 +46,10 @@ class PropertyController:
         try:
             property_payload = request.get_json()
             inserted_property = property_services.insert_property(property_payload)
-            return http_responses.successResponse(inserted_property)
+            return http_responses.successResponse(inserted_property, 201)
                         
         except Exception as error:
-            return http_responses.errorResponse(str(error))
+            return http_responses.errorResponse(str(error), 400)
 
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties/<id>', methods=['PUT'])
@@ -57,20 +57,20 @@ class PropertyController:
         try:
             property_payload = request.get_json()
             updated_property = property_services.update_property(id, property_payload)
-            return http_responses.successResponse(updated_property)
+            return http_responses.successResponse(updated_property, 201)
         
         except Exception as error:
-            return http_responses.errorResponse(str(error))
+            return http_responses.errorResponse(str(error), 400)
 
     @cross_origin(supports_credentials=True)
     @api_blueprint.route('/properties/<id>', methods=['DELETE'])    
     def deactivate_property(id):
         try:
             deleted_property = property_services.deactivate_property(id)
-            return http_responses.successResponse(deleted_property)
+            return http_responses.successResponse(deleted_property, 200)
         
         except Exception as error:
-            return http_responses.errorResponse(str(error))
+            return http_responses.errorResponse(str(error), 400)
         
     #This code provides a basic implementation of a Flask API endpoint for retrieving all properties from a MongoDB database. 
     #The jsonify function is used to create a JSON response that can be sent back to the client.
