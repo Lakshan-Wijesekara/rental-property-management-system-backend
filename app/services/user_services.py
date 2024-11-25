@@ -2,8 +2,6 @@ from services.db_connection import MongoDBConnection, user_collection_name
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from models.user_model import User
-from pymongo import ReturnDocument
-from flask import jsonify
 class UserServices:
     def __init__(self):
         db_connection = MongoDBConnection()
