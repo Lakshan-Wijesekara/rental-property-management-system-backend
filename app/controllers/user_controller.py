@@ -33,8 +33,8 @@ class UserController:
     @user_api_blueprint.route('/users/<id>', methods=['GET'])
     def get_user(id):
         try:
-            retrived_property = user_services.get_user(id)
-            return http_response.successResponse(retrived_property,200)
+            retrived_user = user_services.get_user(id)
+            return http_response.successResponse(retrived_user,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
     
