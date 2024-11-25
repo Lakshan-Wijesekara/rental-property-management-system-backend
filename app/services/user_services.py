@@ -73,13 +73,10 @@ class UserServices:
             raise
 
     def deactivate_user(self, id):
-        try:
-            if id is None:
-                raise ValueError("Please provide the user ID to deactivate user!")
-            
+        try:            
             document_id = self.utility_services.convert_object_id(id)
             deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}})
-            if deactivated_user:
+            if deactivated_user.modified_count>0:
                 return str(document_id)
             else:
                 return "No user found to delete or the requested user already has been deleted!"

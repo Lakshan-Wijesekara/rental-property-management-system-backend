@@ -65,6 +65,6 @@ class UserController:
             deleted_user = user_services.deactivate_user(id)
             return http_response.successResponse(deleted_user,200)
         except Exception as e:
-            return http_response.errorResponse(str(e),415)
+            return http_response.errorResponse(str(e),404)
         
 
