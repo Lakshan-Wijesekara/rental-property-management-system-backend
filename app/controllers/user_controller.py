@@ -37,3 +37,34 @@ class UserController:
             return http_response.successResponse(retrived_property,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
+    
+    @cross_origin(supports_credentials=True)
+    @user_api_blueprint.route('/users', methods=['POST'])
+    def insert_user():
+        try:
+            user_payload = request.get_json()
+            inserted_user = user_services.insert_user(user_payload)
+            return http_response.successResponse(inserted_user,200)
+        except Exception as e:
+            return http_response.errorResponse(str(e),415)
+
+    @cross_origin(supports_credentials=True)    
+    @user_api_blueprint.route('/users/<id>', methods=['PUT'])
+    def update_user(id):
+        try:
+            user_payload = request.get_json()
+            updated_user = user_services.update_user(id,user_payload)
+            return http_response.successResponse(updated_user,200)
+        except Exception as e:
+            return http_response.errorResponse(str(e),415)
+    
+    @cross_origin(supports_credentials=True)    
+    @user_api_blueprint.route('/users/<id>', methods=['DELETE'])
+    def delete_user(id):
+        try:
+            deleted_user = user_services.deactivate_user(id)
+            return http_response.successResponse(deleted_user,200)
+        except Exception as e:
+            return http_response.errorResponse(str(e),415)
+        
+
