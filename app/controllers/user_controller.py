@@ -4,6 +4,7 @@ from services.http_responses import HttpResponse
 from flask_cors import cross_origin
 from services.cors_config import CORSConfig
 from dotenv import load_dotenv
+from werkzeug.exceptions import HTTPException
 import os
 
 #Get the Local URI
@@ -28,6 +29,8 @@ class UserController:
             return http_response.successResponse(retrieved_users, 200)
         except Exception as e:
             return http_response.errorResponse(str(e), 400)
+        except Exception as e:
+            raise HTTPException(description="An internal server error occurred!", code=500)
         
     @cross_origin(supports_credentials=True)
     @user_api_blueprint.route('/users/<id>', methods=['GET'])
@@ -37,6 +40,8 @@ class UserController:
             return http_response.successResponse(retrived_user,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
+        except Exception as e:
+            raise HTTPException(description="An internal server error occurred!", code=500)
     
     @cross_origin(supports_credentials=True)
     @user_api_blueprint.route('/users', methods=['POST'])
@@ -47,6 +52,8 @@ class UserController:
             return http_response.successResponse(inserted_user,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
+        except Exception as e:
+            raise HTTPException(description="An internal server error occurred!", code=500)
 
     @cross_origin(supports_credentials=True)    
     @user_api_blueprint.route('/users/<id>', methods=['PUT'])
@@ -57,6 +64,8 @@ class UserController:
             return http_response.successResponse(updated_user,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
+        except Exception as e:
+            raise HTTPException(description="An internal server error occurred!", code=500)
     
     @cross_origin(supports_credentials=True)    
     @user_api_blueprint.route('/users/<id>', methods=['DELETE'])
@@ -66,3 +75,5 @@ class UserController:
             return http_response.successResponse(deleted_user,200)
         except Exception as e:
             return http_response.errorResponse(str(e),400)
+        except:
+            raise HTTPException(description="An internal server error occurred!", code=500)
