@@ -5,6 +5,8 @@ from flask_cors import cross_origin
 from services.cors_config import CORSConfig
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
+from services.exceptions import CustomExceptions
+from pymongo import errors
 import os
 
 #Get the Local URI
@@ -17,6 +19,7 @@ cors_config = CORSConfig(origins=[local_uri+"/api/users"], headers=["Content-Typ
 cors_config.initialize_cors(user_api_blueprint)
 http_response = HttpResponse()
 user_services = UserServices()
+custom_exceptions = CustomExceptions()
 
 class UserController:
     @cross_origin(supports_credentials=True)
@@ -28,9 +31,7 @@ class UserController:
             retrieved_users = user_services.get_all_users(firstname, lastname)
             return http_response.successResponse(retrieved_users, 200)
         except Exception as e:
-            return http_response.errorResponse(str(e), 400)
-        except Exception as e:
-            raise HTTPException(description="An internal server error occurred!", code=500)
+            return custom_exceptions.app_exceptions(e)
         
     @cross_origin(supports_credentials=True)
     @user_api_blueprint.route('/users/<id>', methods=['GET'])
@@ -39,9 +40,7 @@ class UserController:
             retrived_user = user_services.get_user(id)
             return http_response.successResponse(retrived_user,200)
         except Exception as e:
-            return http_response.errorResponse(str(e),400)
-        except Exception as e:
-            raise HTTPException(description="An internal server error occurred!", code=500)
+            return custom_exceptions.app_exceptions(e)
     
     @cross_origin(supports_credentials=True)
     @user_api_blueprint.route('/users', methods=['POST'])
@@ -51,9 +50,7 @@ class UserController:
             inserted_user = user_services.insert_user(user_payload)
             return http_response.successResponse(inserted_user,200)
         except Exception as e:
-            return http_response.errorResponse(str(e),400)
-        except Exception as e:
-            raise HTTPException(description="An internal server error occurred!", code=500)
+            return custom_exceptions.app_exceptions(e)
 
     @cross_origin(supports_credentials=True)    
     @user_api_blueprint.route('/users/<id>', methods=['PUT'])
@@ -63,10 +60,8 @@ class UserController:
             updated_user = user_services.update_user(id,user_payload)
             return http_response.successResponse(updated_user,200)
         except Exception as e:
-            return http_response.errorResponse(str(e),400)
-        except Exception as e:
-            raise HTTPException(description="An internal server error occurred!", code=500)
-    
+            return custom_exceptions.app_exceptions(e)
+        
     @cross_origin(supports_credentials=True)    
     @user_api_blueprint.route('/users/<id>', methods=['DELETE'])
     def delete_user(id):
@@ -74,6 +69,4 @@ class UserController:
             deleted_user = user_services.deactivate_user(id)
             return http_response.successResponse(deleted_user,200)
         except Exception as e:
-            return http_response.errorResponse(str(e),400)
-        except:
-            raise HTTPException(description="An internal server error occurred!", code=500)
+            return custom_exceptions.app_exceptions(e)
