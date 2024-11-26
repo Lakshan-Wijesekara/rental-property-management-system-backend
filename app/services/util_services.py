@@ -1,12 +1,19 @@
 from bson.objectid import ObjectId
+from pymongo.cursor import Cursor
 
 class UtilService:
     def convert_cursor_object(self, cursorObject):
         properties = cursorObject
-        properties_list = list(properties)
+        #Update the method to check for cursor objects or normal documents when using find_one()
+        if isinstance(properties, Cursor):
+            properties_list = list(properties)
         # Creates a list of dictionaries from properties_list and each is a copy of the original but the id is converted to a string id
-        data_list = [{**doc, '_id': str(doc['_id'])} for doc in properties_list] 
-        return data_list
+            data_list = [{**doc, '_id': str(doc['_id'])} for doc in properties_list] 
+            return data_list
+        else:
+            if '_id' in properties:
+                properties['_id'] = str(properties['_id'])
+                return properties
     
     def convert_object_id(self, id):
         return ObjectId(id)
