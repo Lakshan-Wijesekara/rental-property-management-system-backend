@@ -13,18 +13,17 @@ class UserServices:
     def get_all_users(self, firstname, lastname):
         try:
             #Filter using query parameters
-            user_filter_query = {}
+            user_filter_query = {"is_active": True}
             if firstname:
                 user_filter_query["firstname"] = {"$regex": f"^{firstname}", "$options": "i"}
             if lastname:
                 user_filter_query["lastname"] = {"$regex": f"^{lastname}", "$options": "i"}
-            user_filter_query['is_active'] = True
             users = self.user_collection.find(user_filter_query)
             users_objects = self.utility_services.convert_cursor_object(users)
             if users_objects:
                 return users_objects
             else:
-                return "No record found!" 
+                return ValueError("No record found, please check the given values!") 
         except:
             raise
 
@@ -58,9 +57,8 @@ class UserServices:
             if isinstance(user_instance, User):
                 user_instance_dict = user_instance.__dict__.copy()
                 user_id = self.utility_services.convert_object_id(id)
-                updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict} )
-                updated_user_count = updated_user_record.modified_count
-                if updated_user_count>0:
+                updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict} ).modified_count
+                if updated_user_record>0:
                     return str(user_id)
                 else:
                     return "This user has been already updated with the given data!"
@@ -72,8 +70,8 @@ class UserServices:
     def deactivate_user(self, id):
         try:            
             document_id = self.utility_services.convert_object_id(id)
-            deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}})
-            if deactivated_user.modified_count>0:
+            deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).modified_count
+            if deactivated_user>0:
                 return str(document_id)
             else:
                 return "No user found to delete or the requested user already has been deleted!"
