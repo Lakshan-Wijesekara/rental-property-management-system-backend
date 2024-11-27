@@ -1,8 +1,10 @@
 from flask import jsonify
+from pymongo import ReturnDocument
 from services.db_connection import MongoDBConnection, user_collection_name
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from models.user_model import User
+from services.exceptions import InvalidResponse
 class UserServices:
     def __init__(self):
         db_connection = MongoDBConnection()
@@ -23,7 +25,7 @@ class UserServices:
             if users_objects:
                 return users_objects
             else:
-                return ValueError("No record found, please check the given values!") 
+                raise InvalidResponse("No records were found!", 400)
         except:
             raise
 
@@ -35,19 +37,19 @@ class UserServices:
             if retrieved_user_doc:
                 return retrieved_user_doc
             else:
-                return ValueError("No record found from the given ID!")
+                raise InvalidResponse("No user found from the given ID!", 400)
         except:
             raise
 
     def insert_user(self, user_payload):
         try:
-            if isinstance(user_payload, User):
-                user_instance = User(**user_payload)
-                user_instance_dict = user_instance.__dict__.copy()
+            user_instance = User(**user_payload)
+            user_instance_dict = user_instance.__dict__.copy()
+            if user_instance_dict:
                 inserted_user_id = self.user_collection.insert_one(user_instance_dict).inserted_id
                 return str(inserted_user_id)
             else:
-                raise ValueError      
+                raise InvalidResponse("No user record was created!", 400)
         except:
             raise
 
@@ -61,19 +63,17 @@ class UserServices:
                 if updated_user_record>0:
                     return str(user_id)
                 else:
-                    return "This user has been already updated with the given data!"
-            else:
-                raise ValueError
+                    raise InvalidResponse("No records were modified!", 400)
         except:
             raise
 
     def deactivate_user(self, id):
         try:            
             document_id = self.utility_services.convert_object_id(id)
-            deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).modified_count
+            deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).matched_count
             if deactivated_user>0:
                 return str(document_id)
             else:
-                return "No user found to delete or the requested user already has been deleted!"
+                raise InvalidResponse("No matching record found to delete!", 400)
         except:
             raise

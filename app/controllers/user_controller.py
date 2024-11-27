@@ -4,9 +4,7 @@ from services.http_responses import HttpResponse
 from flask_cors import cross_origin
 from services.cors_config import CORSConfig
 from dotenv import load_dotenv
-from werkzeug.exceptions import HTTPException
 from services.exceptions import CustomExceptions
-from pymongo import errors
 import os
 
 #Get the Local URI
@@ -67,6 +65,7 @@ class UserController:
     def delete_user(id):
         try:
             deleted_user = user_services.deactivate_user(id)
-            return http_response.successResponse(deleted_user,200)
+            if deleted_user!="":
+                return http_response.successResponse(deleted_user,200)
         except Exception as e:
             return custom_exceptions.app_exceptions(e)
