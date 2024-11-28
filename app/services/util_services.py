@@ -17,7 +17,7 @@ class UtilService:
     
     def convert_object_id(self, id):
         return ObjectId(id)
-    
+
 # properties_json = json_util.dumps(properties) #To get the JSON string
 # (because the cursor object cannot directly convert to objects)
 # properties_objects = json.loads(properties_json) #Convert to JSON objects
