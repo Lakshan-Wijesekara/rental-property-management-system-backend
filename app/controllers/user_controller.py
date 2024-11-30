@@ -27,8 +27,10 @@ class UserController:
             firstname = request.args.get('firstname')
             lastname = request.args.get('lastname')
             retrieved_users = user_services.get_all_users(firstname, lastname)
+
             return http_response.successResponse(retrieved_users, 200)
         except Exception as e:
+
             return custom_exceptions.app_exceptions(e)
         
     @cross_origin(supports_credentials=True)
@@ -36,8 +38,10 @@ class UserController:
     def get_user(id):
         try:
             retrived_user = user_services.get_user(id)
-            return http_response.successResponse(retrived_user,200)
+
+            return http_response.successResponse(retrived_user, 200)
         except Exception as e:
+
             return custom_exceptions.app_exceptions(e)
     
     @cross_origin(supports_credentials=True)
@@ -46,8 +50,10 @@ class UserController:
         try:
             user_payload = request.get_json()
             inserted_user = user_services.insert_user(user_payload)
-            return http_response.successResponse(inserted_user,200)
+
+            return http_response.successResponse(inserted_user, 200)
         except Exception as e:
+
             return custom_exceptions.app_exceptions(e)
 
     @cross_origin(supports_credentials=True)    
@@ -56,8 +62,10 @@ class UserController:
         try:
             user_payload = request.get_json()
             updated_user = user_services.update_user(id,user_payload)
-            return http_response.successResponse(updated_user,200)
+
+            return http_response.successResponse(updated_user, 200)
         except Exception as e:
+
             return custom_exceptions.app_exceptions(e)
         
     @cross_origin(supports_credentials=True)    
@@ -66,6 +74,8 @@ class UserController:
         try:
             deleted_user = user_services.deactivate_user(id)
             if deleted_user!="":
-                return http_response.successResponse(deleted_user,200)
+
+                return http_response.successResponse(deleted_user, 200)
         except Exception as e:
+
             return custom_exceptions.app_exceptions(e)

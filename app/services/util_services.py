@@ -14,6 +14,8 @@ class UtilService:
             if '_id' in properties:
                 properties['_id'] = str(properties['_id'])
                 return properties
+            else:
+                return "An internal error occurred!"
     
     def convert_object_id(self, id):
         return ObjectId(id)
