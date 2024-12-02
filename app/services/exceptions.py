@@ -17,13 +17,17 @@ class CustomExceptions:
 
     def app_exceptions(self, error):
         error_class_name = type(error) #Get the type of error
-        if error_class_name in self.exception_list:#Check if the incoming error type is from exception list
+        try:
+            if error_class_name==InvalidResponse:#If the incoming error does not match with preconfigured exceptions
+                
+                return http_response.errorResponse(error.message, error.status_code)
             get_error = self.exception_list.get(error_class_name, ("An unexpected error occurred!", 500))
-            
+
             return http_response.errorResponse(*get_error)
-        elif error_class_name==InvalidResponse:#If the incoming error does not match with preconfigured exceptions
+        except Exception as error:
             
-            return http_response.errorResponse(error.message, error.status_code)
+            return http_response.errorResponse(str(error), 500)
+
 
 class InvalidResponse(Exception):
     def __init__(self, message, status_code=None, payload=None):
