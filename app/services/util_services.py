@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from pymongo.cursor import Cursor
+from services.exceptions import InvalidResponse
 
 class UtilService:
     def convert_cursor_object(self, cursorObject):
@@ -15,7 +16,7 @@ class UtilService:
                 properties['_id'] = str(properties['_id'])
                 return properties
             else:
-                return "An internal error occurred!"
+                raise InvalidResponse("An internal error occurred!", 400)
     
     def convert_object_id(self, id):
         return ObjectId(id)

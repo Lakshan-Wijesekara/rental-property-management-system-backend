@@ -73,9 +73,8 @@ class UserController:
     def delete_user(id):
         try:
             deleted_user = user_services.deactivate_user(id)
-            if deleted_user!="":
-
-                return http_response.successResponse(deleted_user, 200)
+            
+            return http_response.successResponse(deleted_user, 200)
         except Exception as e:
 
             return custom_exceptions.app_exceptions(e)

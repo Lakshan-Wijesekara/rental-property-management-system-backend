@@ -16,9 +16,11 @@ class MongoDBConnection:
 
     def get_propertyCollection(self, property_details):       
         propertyCollection = self.db[property_details]
+
         return propertyCollection
     
     def get_userCollection(self, user_details):       
         userCollection = self.db[user_details]
+        
         return userCollection
 

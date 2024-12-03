@@ -72,7 +72,7 @@ class UserServices:
             document_id = self.utility_services.convert_object_id(id)
             deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).modified_count
             if deactivated_user>0:
-                
+
                 return str(document_id)
             else:
                 raise InvalidResponse("No matching record found to delete!", 400)
