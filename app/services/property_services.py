@@ -11,6 +11,15 @@ class PropertyServices:
         self.http_responses = HttpResponse()
         self.property_collection = database_connection.get_propertyCollection(property_collection_name)
 
+    def authenticate(self, username, password):
+        property_collection =  self.property_collection
+        database_username = property_collection.find_one({"username": username})
+        database_user_password = property_collection.find_one({"password": password})
+        if database_username and database_user_password:
+            return property_collection.find_one({"password": password})
+        else:
+            return False
+
     def get_all(self,selectedCity, propertyName):
         try:
             property_collection =  self.property_collection
