@@ -8,4 +8,4 @@ class Property:
     monthlyRental: str
     latitude: str
     longtitude: str
-    is_active: str
+    is_active: True

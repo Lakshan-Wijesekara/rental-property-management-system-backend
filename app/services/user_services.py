@@ -1,14 +1,34 @@
+import bcrypt
 from services.db_connection import MongoDBConnection, user_collection_name
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from models.user_model import User
 from services.exceptions import InvalidResponse
+from services.jwt_handler import generate_jwt
+
 class UserServices:
     def __init__(self):
         db_connection = MongoDBConnection()
         self.utility_services = UtilService()
         self.http_response = HttpResponse()
         self.user_collection = db_connection.get_userCollection(user_collection_name)
+
+    def authenticate(self, username, password):
+        try:
+            user_collection =  self.user_collection
+            user_data = user_collection.find_one({"username": username})
+            user_json = self.utility_services.convert_cursor_object(user_data)
+            database_pwd = user_data.get("password")
+            if user_data != None:
+                check_pwd = bcrypt.checkpw(password.encode('utf-8'), database_pwd.encode('utf-8'))
+                if check_pwd == True:
+                    token = generate_jwt(payload=user_json, lifetime=15)
+  
+                    return token
+                else:
+                    raise InvalidResponse("Invalid Username or Password!", 401)
+        except:
+            raise
 
     def get_all_users(self, firstname, lastname):
         try:

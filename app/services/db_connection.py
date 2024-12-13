@@ -23,4 +23,3 @@ class MongoDBConnection:
         userCollection = self.db[user_details]
         
         return userCollection
-

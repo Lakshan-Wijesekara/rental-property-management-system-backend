@@ -11,16 +11,7 @@ class PropertyServices:
         self.http_responses = HttpResponse()
         self.property_collection = database_connection.get_propertyCollection(property_collection_name)
 
-    def authenticate(self, username, password):
-        property_collection =  self.property_collection
-        database_username = property_collection.find_one({"username": username})
-        database_user_password = property_collection.find_one({"password": password})
-        if database_username and database_user_password:
-            return property_collection.find_one({"password": password})
-        else:
-            return False
-
-    def get_all(self,selectedCity, propertyName):
+    def get_all(self, selectedCity, propertyName):
         try:
             property_collection =  self.property_collection
             # Query parameters for filtering
@@ -46,7 +37,7 @@ class PropertyServices:
         except:
             raise
 
-    def get_property(self,id):
+    def get_property(self, id):
         try:    
             property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
@@ -76,7 +67,7 @@ class PropertyServices:
             except:
                 raise
     
-    def update_property(self,id, property_payload):
+    def update_property(self, id, property_payload):
         try:
             property_collection =  self.property_collection
             property_model_instance = Property(**property_payload)
