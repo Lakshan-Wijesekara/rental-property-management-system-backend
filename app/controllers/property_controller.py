@@ -1,4 +1,4 @@
-from flask import Blueprint, request #jsonify converts python objects into JSON format
+from flask import Blueprint, request
 from services.property_services import PropertyServices
 from services.http_responses import HttpResponse
 from flask_cors import cross_origin

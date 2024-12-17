@@ -18,7 +18,7 @@ class CustomExceptions:
         error_class_name = type(error) 
         try:
             #If the incoming error comes as a custom defined error
-            if error_class_name==InvalidResponse:
+            if error_class_name == InvalidResponse:
                 return http_response.errorResponse(error.message, error.status_code)
             get_error = self.exception_list.get(error_class_name, ("An unexpected error occurred!", 400))
 

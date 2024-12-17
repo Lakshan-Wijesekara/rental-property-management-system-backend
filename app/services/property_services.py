@@ -63,7 +63,7 @@ class PropertyServices:
             try:
                 inserted_property = property_collection.insert_one(property_dict)
                 inserted_property_id = str(inserted_property.inserted_id)
-                
+
                 return self.http_responses.successResponse(inserted_property_id)
               
             except:
@@ -76,7 +76,7 @@ class PropertyServices:
             property_dict = property_model_instance.__dict__.copy()
             property_id = self.convert_properties.convert_object_id(id)
             updated_property = property_collection.update_one({"_id": property_id}, {"$set":property_dict})
-            if updated_property.matched_count==0 and property_payload == {}:
+            if updated_property.matched_count == 0 and property_payload == {}:
                 raise ValueError("Id not found to update or no data to update the record!")
             else:
                 return self.http_responses.successResponse(str(property_id))
@@ -89,7 +89,7 @@ class PropertyServices:
             property_collection=  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
             deleted_property = property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
-            if deleted_property.matched_count==0 and id==None:
+            if deleted_property.matched_count == 0 and id == None:
                 raise ValueError("Given ID does not match with any records or id is not valid!")
             else:
                 return self.http_responses.successResponse(str(property_id))
