@@ -1,5 +1,3 @@
-from flask import json
-from pydantic import ValidationError
 from pymongo import errors
 from services.http_responses import HttpResponse
 
@@ -16,11 +14,12 @@ class CustomExceptions:
     }
 
     def app_exceptions(self, error):
-        error_class_name = type(error) #Get the type of error
+        #Get the type of error
+        error_class_name = type(error) 
         try:
-            if error_class_name==InvalidResponse:#If the incoming error comes as a custom defined error
+            #If the incoming error comes as a custom defined error
+            if error_class_name==InvalidResponse:
                 return http_response.errorResponse(error.message, error.status_code)
-            
             get_error = self.exception_list.get(error_class_name, ("An unexpected error occurred!", 400))
 
             return http_response.errorResponse(*get_error)

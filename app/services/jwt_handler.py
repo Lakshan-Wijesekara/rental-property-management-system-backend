@@ -4,7 +4,7 @@ from services.exceptions import InvalidResponse
 from datetime import datetime, timedelta
 
 def generate_jwt(payload, lifetime=None):
-    # Lifetime of the token can be changed accordingly
+    #Lifetime of the token can be changed accordingly
     if lifetime:
         payload['exp'] = (datetime.now() + timedelta(minutes=lifetime)).timestamp()
         try:
@@ -15,5 +15,5 @@ def generate_jwt(payload, lifetime=None):
         return None
 
 def decode_jwt(token):
-    # Retrieves the token and checks the validity
+    #Retrieves the token and checks the validity
     return jwt.decode(token, os.getenv('SECRET_KEY', None), algorithms=["HS256"])

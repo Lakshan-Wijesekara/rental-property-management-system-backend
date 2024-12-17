@@ -1,9 +1,9 @@
-import bcrypt
 from services.db_connection import MongoDBConnection, user_collection_name
 from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from models.user_model import User
 from services.exceptions import InvalidResponse
+from services.authentication import AuthenticationService
 from services.jwt_handler import generate_jwt
 
 class UserServices:
@@ -11,6 +11,7 @@ class UserServices:
         db_connection = MongoDBConnection()
         self.utility_services = UtilService()
         self.http_response = HttpResponse()
+        self.user_authentication = AuthenticationService()
         self.user_collection = db_connection.get_userCollection(user_collection_name)
 
     def authenticate(self, username, password):
@@ -20,13 +21,14 @@ class UserServices:
             user_json = self.utility_services.convert_cursor_object(user_data)
             database_pwd = user_data.get("password")
             if user_data != None:
-                check_pwd = bcrypt.checkpw(password.encode('utf-8'), database_pwd.encode('utf-8'))
+                check_pwd = self.user_authentication.authenticate_user(password, database_pwd)
                 if check_pwd == True:
-                    token = generate_jwt(payload=user_json, lifetime=15)
-  
+                    token = generate_jwt(payload=user_json, lifetime=1)
+
                     return token
                 else:
                     raise InvalidResponse("Invalid Username or Password!", 401)
+                
         except:
             raise
 
@@ -41,10 +43,10 @@ class UserServices:
             users = self.user_collection.find(user_filter_query)
             users_objects = self.utility_services.convert_cursor_object(users)
             if users_objects:
-
                 return users_objects
             else:
                 raise InvalidResponse("No records were found!", 400)
+
         except:
             raise
 
@@ -54,10 +56,10 @@ class UserServices:
             retrieved_user = self.user_collection.find_one({'_id': user_id})
             retrieved_user_doc = self.utility_services.convert_cursor_object(retrieved_user)
             if retrieved_user_doc:
-
                 return retrieved_user_doc
             else:
                 raise InvalidResponse("No user found from the given ID!", 400)
+
         except:
             raise
 
@@ -70,6 +72,7 @@ class UserServices:
                 inserted_user_id = self.user_collection.insert_one(user_instance_dict).inserted_id
 
                 return str(inserted_user_id)
+
         except:
             raise InvalidResponse("No user record was created, please check all required user parameters!", 400)
 
@@ -80,10 +83,10 @@ class UserServices:
             user_id = self.utility_services.convert_object_id(id)
             updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict} ).modified_count
             if updated_user_record>0:
-
                 return str(user_id)
             else:
                 raise InvalidResponse("No records were modified!", 400)
+
         except:
             raise InvalidResponse("Operation failed, please check all required user parameters!", 400)
 
@@ -92,9 +95,9 @@ class UserServices:
             document_id = self.utility_services.convert_object_id(id)
             deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).modified_count
             if deactivated_user>0:
-
                 return str(document_id)
             else:
                 raise InvalidResponse("No matching record found to delete!", 400)
+
         except:
             raise

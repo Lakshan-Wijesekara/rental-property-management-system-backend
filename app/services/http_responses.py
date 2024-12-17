@@ -1,4 +1,3 @@
-
 class HttpResponse():
     def successResponse(self, data, status_code=200):
         success_response = {

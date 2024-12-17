@@ -5,7 +5,7 @@ from services.db_connection import MongoDBConnection, property_collection_name
 from models.property_model import Property
 
 class PropertyServices:
-    def __init__(self): #model parameter is the MongoDBModel class
+    def __init__(self): 
         database_connection = MongoDBConnection()
         self.convert_properties = UtilService()
         self.http_responses = HttpResponse()
@@ -14,10 +14,10 @@ class PropertyServices:
     def get_all(self, selectedCity, propertyName):
         try:
             property_collection =  self.property_collection
-            # Query parameters for filtering
+            #Query parameters for filtering
             filter_query = {}
             if selectedCity or propertyName:
-                # Argument gets the selectedCity and propertyName from the URL and checks if the returned value can be found in the document list
+                #Argument gets the selectedCity and propertyName from the URL and checks if the returned value can be found in the document list
                 if selectedCity:
                     filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
                 if propertyName:
@@ -63,7 +63,9 @@ class PropertyServices:
             try:
                 inserted_property = property_collection.insert_one(property_dict)
                 inserted_property_id = str(inserted_property.inserted_id)
-                return self.http_responses.successResponse(inserted_property_id)      
+                
+                return self.http_responses.successResponse(inserted_property_id)
+              
             except:
                 raise
     
@@ -78,6 +80,7 @@ class PropertyServices:
                 raise ValueError("Id not found to update or no data to update the record!")
             else:
                 return self.http_responses.successResponse(str(property_id))
+            
         except:
             raise 
         
@@ -89,7 +92,8 @@ class PropertyServices:
             if deleted_property.matched_count==0 and id==None:
                 raise ValueError("Given ID does not match with any records or id is not valid!")
             else:
-                return self.http_responses.successResponse(str(property_id))  
+                return self.http_responses.successResponse(str(property_id))
+              
         except:
             raise 
               

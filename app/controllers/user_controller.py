@@ -26,7 +26,7 @@ class UserController:
     @auth_required
     def get_users():
         if request.method == 'OPTIONS':
-    # Respond to preflight request
+    #Respond to preflight request
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "http://localhost:4200")
             response.headers.add('Access-Control-Allow-Methods', 'GET,OPTIONS')
@@ -41,7 +41,6 @@ class UserController:
             return http_response.successResponse(retrieved_users, 200)
 
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
         
     @cross_origin(supports_credentials=True)
@@ -50,17 +49,17 @@ class UserController:
     def get_user(id):
         try:
             retrived_user = user_services.get_user(id)
+
             return http_response.successResponse(retrived_user, 200)
 
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
     
     @cross_origin(supports_credentials=True)
     @user_api_blueprint.route('/login', methods=['POST', 'OPTIONS'])
     def auth_user():
         if request.method == 'OPTIONS':
-        # Respond to preflight request
+        #Respond to preflight request
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "http://localhost:4200")
             response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
@@ -78,7 +77,6 @@ class UserController:
             else:
                 return http_response.errorResponse("No user token found!", 401)
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
    
     @cross_origin(supports_credentials=True)
@@ -93,7 +91,6 @@ class UserController:
             return http_response.successResponse(inserted_user, 200)
 
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
 
     @cross_origin(supports_credentials=True)    
@@ -104,10 +101,10 @@ class UserController:
             user_payload = request.get_json()
             user_payload['is_active'] = True
             updated_user = user_services.update_user(id, user_payload)
+
             return http_response.successResponse(updated_user, 200)
 
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
         
     @cross_origin(supports_credentials=True)    
@@ -116,8 +113,8 @@ class UserController:
     def delete_user(id):
         try:
             deleted_user = user_services.deactivate_user(id)
+
             return http_response.successResponse(deleted_user, 200)
 
         except Exception as e:
-
             return custom_exceptions.app_exceptions(e)
