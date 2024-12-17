@@ -3,8 +3,8 @@ from services.http_responses import HttpResponse
 from services.util_services import UtilService
 from models.user_model import User
 from services.exceptions import InvalidResponse
-from services.authentication import AuthenticationService
 from services.jwt_handler import generate_jwt
+from services.authentication import AuthenticationService
 
 class UserServices:
     def __init__(self):
