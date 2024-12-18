@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
 from flask import make_response, request
 from services.http_responses import HttpResponse
 from services.jwt_handler import decode_jwt
 from services.exceptions import InvalidResponse
+from services.jwt_handler import generate_jwt
 from functools import wraps
 
 def check_jwt():
@@ -27,8 +29,14 @@ def auth_required(route_function):
             return make_response("PreFlight Passed", 204)
         try:
             user_data = check_jwt()
+            if user_data:
+                new_token = generate_jwt(payload=user_data, lifetime=5)
+                response = make_response(route_function(*args, **kwargs))
+                response.headers['NewAuthToken'] = f'Bearer {new_token}'
+                return response
+
         except Exception as e:
-            return HttpResponse().errorResponse("Authorization failed!", 401)
+            return HttpResponse().errorResponse(f'Authorization failed!: {e}', 401)
         
         return route_function(*args, **kwargs)
     #This returns the protected version of the route, wrapped version of the route

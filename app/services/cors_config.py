@@ -12,6 +12,7 @@ class CORSConfig:
            r"/api/*":{
                "origins": self.origins,
                "methods": self.methods,
-               "allow_headers": self.headers
+               "allow_headers": self.headers,
+               "expose_headers": ["NewAuthToken"],
            } 
         }, supports_credentials=self.supports_credentials)
