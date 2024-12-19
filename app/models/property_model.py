@@ -7,4 +7,4 @@ class Property(BaseModel):
     monthlyRental: str
     latitude: str
     longtitude: str
-    is_active: True
+    is_active: bool
