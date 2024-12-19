@@ -14,7 +14,7 @@ local_uri = os.getenv("LOCAL_HOST")
 #Create the blueprint for users
 user_api_blueprint = Blueprint('users', __name__)
 #Initialize CORS on blueprint
-cors_config = CORSConfig(origins=[os.getenv("FRONT_END_URI")], headers=["Content-Type", "Authorization"], supports_credentials=True)
+cors_config = CORSConfig(origins=[os.getenv("FRONT_END_URI")], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], headers=["Content-Type", "Authorization"], supports_credentials=True)
 cors_config.initialize_cors(user_api_blueprint)
 http_response = HttpResponse()
 user_services = UserServices()
@@ -28,10 +28,6 @@ class UserController:
         if request.method == 'OPTIONS':
     #Respond to preflight request
             response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "http://localhost:4200")
-            response.headers.add('Access-Control-Allow-Methods', 'GET,OPTIONS')
-            response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
             return response, 204
         try:
             firstname = request.args.get('firstname')
@@ -60,11 +56,7 @@ class UserController:
     def auth_user():
         if request.method == 'OPTIONS':
         #Respond to preflight request
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "http://localhost:4200")
-            response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
-            response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-            
+            response = make_response()            
             return response, 204
         try:
             data_received = request.json

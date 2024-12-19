@@ -15,7 +15,7 @@ property_services = PropertyServices()
 #Create a Blueprint
 property_api_blueprint = Blueprint('properties', __name__)
 #Initialize CORS on blueprint
-cors_config = CORSConfig(origins=[os.getenv("FRONT_END_URI")], headers=["Content-Type", "Authorization"])
+cors_config = CORSConfig(origins=[os.getenv("FRONT_END_URI")], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], headers=["Content-Type", "Authorization"])
 cors_config.initialize_cors(property_api_blueprint)
 class PropertyController:
     @cross_origin(supports_credentials=True)  
