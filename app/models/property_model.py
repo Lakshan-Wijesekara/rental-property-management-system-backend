@@ -1,7 +1,6 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
-@dataclass
-class Property:
+class Property(BaseModel):
     selectedCity: str
     propertyName: str
     propertyArea: str

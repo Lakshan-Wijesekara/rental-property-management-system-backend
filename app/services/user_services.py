@@ -81,7 +81,7 @@ class UserServices:
             user_instance = User(**user_payload)
             user_instance_dict = user_instance.__dict__.copy()
             user_id = self.utility_services.convert_object_id(id)
-            updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict} ).modified_count
+            updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict}).modified_count
             if updated_user_record>0:
                 return str(user_id)
             else:

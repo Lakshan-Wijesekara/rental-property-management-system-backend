@@ -4,6 +4,7 @@ from services.http_responses import HttpResponse
 from flask_cors import cross_origin
 from services.cors_config import CORSConfig
 from dotenv import load_dotenv
+from services.auth_guard import auth_required
 import os
 
 load_dotenv(dotenv_path='.env')
@@ -19,6 +20,7 @@ cors_config.initialize_cors(property_api_blueprint)
 class PropertyController:
     @cross_origin(supports_credentials=True)  
     @property_api_blueprint.route('/properties', methods=['GET']) #API endpoint
+    @auth_required
     def get_properties():
         try:
             selectedCity = request.args.get('selectedCity')
@@ -32,7 +34,8 @@ class PropertyController:
 
         
     @cross_origin(supports_credentials=True)
-    @property_api_blueprint.route('/properties/<id>', methods=['GET'])    
+    @property_api_blueprint.route('/properties/<id>', methods=['GET'])
+    @auth_required    
     def get_property(id):
         try:
             retrieved_property = property_services.get_property(id)
@@ -44,6 +47,7 @@ class PropertyController:
 
     @cross_origin(supports_credentials=True)
     @property_api_blueprint.route('/properties', methods=['OPTIONS', 'POST'])
+    @auth_required
     def insert_property():
         try:
             property_payload = request.get_json()
@@ -57,6 +61,7 @@ class PropertyController:
 
     @cross_origin(supports_credentials=True)
     @property_api_blueprint.route('/properties/<id>', methods=['OPTIONS', 'PUT'])
+    @auth_required
     def update_property(id):
         try:
             property_payload = request.get_json()
@@ -69,7 +74,8 @@ class PropertyController:
             return http_responses.errorResponse(str(error), 400)
 
     @cross_origin(supports_credentials=True)
-    @property_api_blueprint.route('/properties/<id>', methods=['DELETE'])    
+    @property_api_blueprint.route('/properties/<id>', methods=['DELETE'])
+    @auth_required    
     def deactivate_property(id):
         try:
             deleted_property = property_services.deactivate_property(id)
