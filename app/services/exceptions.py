@@ -2,7 +2,6 @@ from pymongo import errors
 from services.http_responses import HttpResponse
 
 http_response = HttpResponse()
-
 class CustomExceptions:
 
     exception_list = {

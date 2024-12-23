@@ -66,6 +66,7 @@ class UserServices:
     def insert_user(self, user_payload):
         try:
             #Used the pydantic to validate the user_instance. It goes to except when failed the validation
+            user_payload['is_active'] = True
             user_instance = User(**user_payload)
             if user_instance:
                 user_instance_dict = user_instance.__dict__.copy()
@@ -79,9 +80,12 @@ class UserServices:
     def update_user(self, id, user_payload):
         try:
             user_instance = User(**user_payload)
+            user_payload['is_active'] = True
             user_instance_dict = user_instance.__dict__.copy()
             user_id = self.utility_services.convert_object_id(id)
-            updated_user_record = self.user_collection.update_one({'_id': user_id}, {"$set":user_instance_dict}).modified_count
+            update_filter = {'_id': user_id}
+            update_operation = {"$set":user_instance_dict}
+            updated_user_record = self.user_collection.update_one(update_filter, update_operation).modified_count
             if updated_user_record>0:
                 return str(user_id)
             else:
@@ -93,7 +97,9 @@ class UserServices:
     def deactivate_user(self, id):
         try:            
             document_id = self.utility_services.convert_object_id(id)
-            deactivated_user = self.user_collection.update_one({"_id":document_id}, {"$set":{"is_active": False}}).modified_count
+            deactivate_filter = {"_id":document_id}, 
+            deactivate_operation = {"$set":{"is_active": False}}
+            deactivated_user = self.user_collection.update_one(deactivate_filter, deactivate_operation).modified_count
             if deactivated_user>0:
                 return str(document_id)
             else:

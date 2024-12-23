@@ -6,7 +6,6 @@ class CORSConfig:
         self.headers = headers
         self.supports_credentials = supports_credentials
 
-
     def initialize_cors(self, blueprint):
         CORS(blueprint, resources={
            r"/api/*":{

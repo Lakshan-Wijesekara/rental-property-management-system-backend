@@ -77,7 +77,6 @@ class UserController:
     def insert_user():
         try:
             user_payload = request.get_json()
-            user_payload['is_active'] = True
             inserted_user = user_services.insert_user(user_payload)
 
             return http_response.successResponse(inserted_user, 200)
@@ -91,7 +90,6 @@ class UserController:
     def update_user(id):
         try:
             user_payload = request.get_json()
-            user_payload['is_active'] = True
             updated_user = user_services.update_user(id, user_payload)
 
             return http_response.successResponse(updated_user, 200)
@@ -105,7 +103,6 @@ class UserController:
     def delete_user(id):
         try:
             deleted_user = user_services.deactivate_user(id)
-
             return http_response.successResponse(deleted_user, 200)
 
         except Exception as e:

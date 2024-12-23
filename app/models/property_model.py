@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-
 class Property(BaseModel):
     selectedCity: str
     propertyName: str
