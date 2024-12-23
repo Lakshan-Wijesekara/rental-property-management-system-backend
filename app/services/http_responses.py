@@ -1,5 +1,4 @@
 class HttpResponse():
-
     def successResponse(self, data, status_code=200):
         success_response = {
             "status": True,
@@ -8,7 +7,7 @@ class HttpResponse():
         }
 
         return success_response, status_code
-      
+
     def errorResponse(self, error, status_code):
         error_response = {
             "status": False,
