@@ -1,5 +1,6 @@
 
 class HttpResponse():
+
     def successResponse(self, data, status_code=200):
         success_response = {
             "status": "success",
@@ -7,7 +8,7 @@ class HttpResponse():
             "data":data
         }
         return success_response, status_code
-
+      
     def errorResponse(self, error, status_code):
         error_response = {
             "status": "Failed",
