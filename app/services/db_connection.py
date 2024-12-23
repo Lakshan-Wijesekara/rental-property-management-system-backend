@@ -8,7 +8,6 @@ Mongo_uri = os.getenv("DB_URI")
 #Collection variables
 property_collection_name = "property_details"
 user_collection_name = "user_details"
-
 class MongoDBConnection:
     def __init__(self): #Base class
         self.client = pymongo.MongoClient(Mongo_uri)
@@ -23,4 +22,3 @@ class MongoDBConnection:
         userCollection = self.db[user_details]
         
         return userCollection
-
