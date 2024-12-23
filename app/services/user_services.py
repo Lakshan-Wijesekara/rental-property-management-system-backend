@@ -79,8 +79,8 @@ class UserServices:
 
     def update_user(self, id, user_payload):
         try:
-            user_instance = User(**user_payload)
             user_payload['is_active'] = True
+            user_instance = User(**user_payload)
             user_instance_dict = user_instance.__dict__.copy()
             user_id = self.utility_services.convert_object_id(id)
             update_filter = {'_id': user_id}
