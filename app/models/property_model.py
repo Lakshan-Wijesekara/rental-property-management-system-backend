@@ -1,6 +1,6 @@
-from dataclasses import dataclass
-from typing import Optional
-
+from pydantic import BaseModel
+class Property(BaseModel):
+  
 @dataclass
 class Property:
     selectedCity: str
@@ -9,4 +9,4 @@ class Property:
     monthlyRental: str
     latitude: str
     longtitude: str
-    is_active: str
+    is_active: bool

@@ -5,21 +5,22 @@ from services.db_connection import MongoDBConnection, property_collection_name
 from models.property_model import Property
 
 class PropertyServices:
-    def __init__(self): #model parameter is the MongoDBModel class
+    def __init__(self): 
         database_connection = MongoDBConnection()
         self.convert_properties = UtilService()
         self.http_responses = HttpResponse()
         self.property_collection = database_connection.get_propertyCollection(property_collection_name)
 
-    def get_all(self,selectedCity, propertyName):
+    def get_all(self, selectedCity, propertyName):
         try:
             property_collection =  self.property_collection
-            # Query parameters for filtering
+            #Query parameters for filtering
             filter_query = {}
             if selectedCity or propertyName:
-                # Argument gets the selectedCity and propertyName from the URL and checks if the returned value can be found in the document list
+                #Argument gets the selectedCity and propertyName from the URL and checks if the returned value can be found in the document list
                 if selectedCity:
-                    filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
+                #Here, f is the F string where the string to be more concise, ^ is the start of string, options make the filter not case sensitive
+                    filter_query['selectedCity'] = {"$regex": f"^{selectedCity}", "$options": "i"} 
                 if propertyName:
                     filter_query['propertyName'] = {"$regex": f"^{propertyName}", "$options": "i"}
             filter_query['is_active'] = True
@@ -37,7 +38,7 @@ class PropertyServices:
         except:
             raise
 
-    def get_property(self,id):
+    def get_property(self, id):
         try:    
             property_collection =  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
@@ -53,6 +54,7 @@ class PropertyServices:
     
     def insert_property(self, property_payload ):
         property_collection =  self.property_collection
+        property_payload['is_active'] = True
         #Unpacks the incoming dict to a Property model instance dataclass
         property_model_instance = Property(**property_payload)
         #Convert the incoming payload to a dictionary
@@ -63,21 +65,27 @@ class PropertyServices:
             try:
                 inserted_property = property_collection.insert_one(property_dict)
                 inserted_property_id = str(inserted_property.inserted_id)
-                return self.http_responses.successResponse(inserted_property_id)      
+
+                return self.http_responses.successResponse(inserted_property_id)
+              
             except:
                 raise
     
-    def update_property(self,id, property_payload):
+    def update_property(self, id, property_payload):
         try:
             property_collection =  self.property_collection
+            property_payload['is_active'] = True
             property_model_instance = Property(**property_payload)
             property_dict = property_model_instance.__dict__.copy()
             property_id = self.convert_properties.convert_object_id(id)
-            updated_property = property_collection.update_one({"_id": property_id}, {"$set":property_dict})
-            if updated_property.matched_count==0 and property_payload == {}:
+            update_filter = {"_id": property_id} 
+            update_operation = {"$set":property_dict}
+            updated_property = property_collection.update_one(update_filter, update_operation)
+            if updated_property.matched_count == 0 and property_payload == {}:
                 raise ValueError("Id not found to update or no data to update the record!")
             else:
                 return self.http_responses.successResponse(str(property_id))
+            
         except:
             raise 
         
@@ -85,11 +93,13 @@ class PropertyServices:
         try:
             property_collection=  self.property_collection
             property_id = self.convert_properties.convert_object_id(id)
-            deleted_property = property_collection.update_one({"_id": property_id},{"$set": {"is_active": False}})
-            if deleted_property.matched_count==0 and id==None:
+            delete_filter = {"_id": property_id} 
+            delete_operation = {"$set": {"is_active": False}}
+            deleted_property = property_collection.update_one(delete_filter, delete_operation)
+            if deleted_property.matched_count == 0 and id == None:
                 raise ValueError("Given ID does not match with any records or id is not valid!")
             else:
-                return self.http_responses.successResponse(str(property_id))  
-        except:
-            raise 
+                return self.http_responses.successResponse(str(property_id))
               
+        except:
+            raise        
